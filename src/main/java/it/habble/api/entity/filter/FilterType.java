@@ -3,8 +3,6 @@ package it.habble.api.entity.filter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import it.habble.api.error.HabbleException;
-
 public enum FilterType {
 	INTEGER, NUMERIC, STRING, BOOLEAN, DATE, TIMESTAMP, TIME, NULL;
 	
@@ -26,16 +24,12 @@ public enum FilterType {
 		return this.equals(TIME);
 	}
 	
-	public Date toDate(String date) throws HabbleException {
-		try {
-			switch(this) {
-				case DATE: return new SimpleDateFormat(dateFormat).parse(date);
-				case TIMESTAMP: return new SimpleDateFormat(timeStampFormat).parse(date);
-				case TIME: return new SimpleDateFormat(timeFormat).parse(date);
-				default: throw new Exception("You can only convert DATE, TIMESTAMP and TIME types");
-			}
-		} catch(Exception e) {
-			throw new HabbleException("Invalid JSON", "Cannot parse date: " + date);
+	public Date toDate(String date) throws Exception {
+		switch(this) {
+			case DATE: return new SimpleDateFormat(dateFormat).parse(date);
+			case TIMESTAMP: return new SimpleDateFormat(timeStampFormat).parse(date);
+			case TIME: return new SimpleDateFormat(timeFormat).parse(date);
+			default: throw new Exception("You can only convert DATE, TIMESTAMP and TIME types");
 		}
 	}
 

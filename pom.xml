@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>it.habble.api</groupId>
 	<artifactId>client</artifactId>
-	<version>0.1.5</version>
+	<version>0.2</version>
 	<name>Habble API Java client</name>
 	<packaging>jar</packaging>
 	<properties>
@@ -87,13 +87,7 @@
 
 	<!-- Package as an executable jar -->
 	<build>
-		<defaultGoal>clean install</defaultGoal>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-		</plugins>
+		<defaultGoal>clean install package</defaultGoal>
 	</build>
 
 	<!-- Add Spring repositories -->
