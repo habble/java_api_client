@@ -13,10 +13,14 @@ public class Paginator {
 	private Integer offset, limit;
 
 	public Paginator orderBy(String field, String direction) {
+		if(StringUtils.isBlank(field)) {
+			
+		}
+
 		orderBy = field;
 		
-		if(StringUtils.isNotBlank(direction) || 
-			 (!direction.equalsIgnoreCase("asc") || 
+		if(StringUtils.isBlank(direction) || 
+			 (!direction.equalsIgnoreCase("asc") && 
 					!direction.equalsIgnoreCase("desc")))
 			direction = "ASC";
 		

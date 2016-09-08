@@ -24,7 +24,10 @@ public enum Endpoint {
 		this.url = url;
 	}
 
-	public static String baseHost() { return "https://cdn.habble.it"; }
+	public static String baseHost() { // "https://cdn.habble.it"
+		return "https://rest.habble.it:8443"; 
+	}
+	
 	public static String apiBaseUrl() { return baseHost() + "/api";   }
 	public static String tokenUrl() { return apiBaseUrl() + "/token"; }
 	

@@ -51,10 +51,18 @@ public class HabbleAPI  {
 	private GroupRequest groupsRequest;
 	
 	public HabbleAPI() throws Exception {
-		loadProperties();
-		initRestTemplates();
+		this(false);
 	}
 	
+	public HabbleAPI(Boolean forAgent) throws Exception {
+		if(!forAgent) {
+			loadProperties();
+			initRestTemplates();
+		} else {
+			createRestTemplate();
+		}
+	}
+
 	/**
 	 * Object for accessing calls' methods
 	 * @return
@@ -115,6 +123,26 @@ public class HabbleAPI  {
 		return sitesRequest;
 	}
 	
+	private HabbleAPI createRestTemplate() {
+		noAuthTemplate = new RestTemplate();
+		noAuthTemplate.getMessageConverters()
+		        .add(0, new StringHttpMessageConverter(Charset.forName("UTF-8")));
+		return this;
+	}
+	
+	private HabbleAPI createOAuthRestTemplate(String clientId, String clientSecret) {
+		ClientCredentialsResourceDetails resource = new ClientCredentialsResourceDetails();
+        resource.setClientAuthenticationScheme(AuthenticationScheme.header);
+        resource.setId("api");
+        resource.setClientId(clientId);
+        resource.setClientSecret(clientSecret);
+        resource.setAccessTokenUri(Endpoint.tokenUrl());
+        oauthTemplate = new OAuth2RestTemplate(resource);
+        
+        this.clientId = clientId;
+        this.clientSecret = clientSecret;
+        return this;
+	}
 	
 	/**
 	 * Creates HTTP REST templates for authorized and non-authorized requests
@@ -125,18 +153,8 @@ public class HabbleAPI  {
 			return; // already inited
 		
 		System.out.println("HabbleAPI.initRestTemplates()");
-		
-		noAuthTemplate = new RestTemplate();
-		noAuthTemplate.getMessageConverters()
-		        .add(0, new StringHttpMessageConverter(Charset.forName("UTF-8")));
-		
-		ClientCredentialsResourceDetails resource = new ClientCredentialsResourceDetails();
-        resource.setClientAuthenticationScheme(AuthenticationScheme.header);
-        resource.setId("api");
-        resource.setClientId(clientId);
-        resource.setClientSecret(clientSecret);
-        resource.setAccessTokenUri(Endpoint.tokenUrl());
-        oauthTemplate = new OAuth2RestTemplate(resource);
+		createRestTemplate();
+		createOAuthRestTemplate(clientId, clientSecret);
 	}
 	
 	/**
@@ -160,7 +178,7 @@ public class HabbleAPI  {
 	 * @return
 	 */
 	@SuppressWarnings({ "unchecked" })
-	public ResponseEntity<String> getResponse(String url, HttpMethod method, HttpEntity<String> entity) {
+	public ResponseEntity<String> getNoAuthResponse(String url, HttpMethod method, HttpEntity<String> entity) {
 		ResponseEntity<String> rawResponse = noAuthTemplate.exchange(url, method, entity, 
 											 String.class, Collections.EMPTY_MAP);
 
@@ -170,8 +188,53 @@ public class HabbleAPI  {
 	}
 	
 	@SuppressWarnings({ "unchecked" })
-	public <T> ResponseEntity<T> getResponse(String url, HttpMethod method, HttpEntity<String> entity, Class<T> ct) {
+	public <T> ResponseEntity<T> getNoAuthResponse(String url, HttpMethod method, HttpEntity<String> entity, Class<T> ct) {
 		ResponseEntity<T> rawResponse = noAuthTemplate.exchange(url, method, entity, 
+												ct, Collections.EMPTY_MAP);
+
+		System.out.println("HTTP code: " + rawResponse.getStatusCode().value() + ", body: " + 
+							 rawResponse.getBody() + ", headers: ");
+		return rawResponse;
+	}
+	
+	/**
+	 * Simple POST request for retrieving the raw JSON response
+	 * @param url it's the endpoint
+	 * @param method the HTTP method
+	 * @param entity the entity to be serialized
+	 * @return
+	 */
+	@SuppressWarnings({ "unchecked" })
+	public ResponseEntity<String> getOAuthResponse(String url, HttpMethod method, HttpEntity<String> entity) {
+		ResponseEntity<String> rawResponse = oauthTemplate.exchange(url, method, entity, 
+											 String.class, Collections.EMPTY_MAP);
+
+		System.out.println("HTTP code: " + rawResponse.getStatusCode().value() + ", body: " + 
+							 rawResponse.getBody() + ", headers: ");
+		return rawResponse;
+	}
+	
+	public RestTemplate getNoAuthTemplate() {
+		return noAuthTemplate;
+	}
+
+	public HabbleAPI setNoAuthTemplate(RestTemplate noAuthTemplate) {
+		this.noAuthTemplate = noAuthTemplate;
+		return this;
+	}
+
+	public OAuth2RestTemplate getOauthTemplate() {
+		return oauthTemplate;
+	}
+
+	public HabbleAPI setOauthTemplate(OAuth2RestTemplate oauthTemplate) {
+		this.oauthTemplate = oauthTemplate;
+		return this;
+	}
+
+	@SuppressWarnings({ "unchecked" })
+	public <T> ResponseEntity<T> getOAuthResponse(String url, HttpMethod method, HttpEntity<String> entity, Class<T> ct) {
+		ResponseEntity<T> rawResponse = oauthTemplate.exchange(url, method, entity, 
 												ct, Collections.EMPTY_MAP);
 
 		System.out.println("HTTP code: " + rawResponse.getStatusCode().value() + ", body: " + 
@@ -193,12 +256,21 @@ public class HabbleAPI  {
 	}
 	
 	@SuppressWarnings("rawtypes")
-	public <T> ResponseEntity<T> postForEntity(String url, HttpEntity httpEntity, Class<T> clazz) {
-		return oauthTemplate.postForEntity(Endpoint.ACTIVATION.toString(), httpEntity, clazz);
+	public <T> ResponseEntity<T> oAuthPostForEntity(String url, HttpEntity httpEntity, Class<T> clazz) {
+		return oauthTemplate.postForEntity(url, httpEntity, clazz);
 	}
 	
-	public <T> ResponseEntity<T> getForEntity(String url, Class<T> clazz) {
-		return oauthTemplate.getForEntity(Endpoint.ACTIVATION.toString(), clazz);
+	public <T> ResponseEntity<T> oAuthGetForEntity(String url, Class<T> clazz) {
+		return oauthTemplate.getForEntity(url, clazz);
+	}
+	
+	@SuppressWarnings("rawtypes")
+	public <T> ResponseEntity<T> noOAuthPostForEntity(String url, HttpEntity httpEntity, Class<T> clazz) {
+		return noAuthTemplate.postForEntity(url, httpEntity, clazz);
+	}
+	
+	public <T> ResponseEntity<T> noOAuthGetForEntity(String url, Class<T> clazz) {
+		return noAuthTemplate.getForEntity(url, clazz);
 	}
 	
 	/**
@@ -281,4 +353,6 @@ public class HabbleAPI  {
 			return "Cannot parse json object";
 		}
 	}
+	
+	
 }
