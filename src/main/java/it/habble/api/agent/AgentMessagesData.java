@@ -13,7 +13,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 	"localId": 149,
 	"mcc": "222",
 	"id": "203",
-	"mnc": "01",
 	"partner": "TIMCafe'",
 	"sizeAmount": 93,
 	"sizeUnit": 1,
@@ -28,7 +27,7 @@ public class AgentMessagesData {
 	public String direction, status;
 	public String partner, id;
 	public Integer sizeAmount, sizeUnit, type;
-	public String mcc, mnc;
+	public String mcc;
 	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm", timezone="CET")
 	public Date timestamp;
 	
@@ -74,11 +73,6 @@ public class AgentMessagesData {
 	
 	public AgentMessagesData mcc(String mcc) {
 		this.mcc = mcc;
-		return this;
-	} 
-	
-	public AgentMessagesData mnc(String mnc) {
-		this.mnc = mnc;
 		return this;
 	} 
 	

@@ -33,6 +33,7 @@ import it.habble.api.request.ContactRequest;
 import it.habble.api.request.DepartmentRequest;
 import it.habble.api.request.GroupRequest;
 import it.habble.api.request.SiteRequest;
+import it.habble.common.CommonUtils;
 
 public class HabbleAPI  {
 	
@@ -50,10 +51,19 @@ public class HabbleAPI  {
 	private SiteRequest sitesRequest;
 	private GroupRequest groupsRequest;
 	
+	/**
+	 * NEw instance with full REST template initialization
+	 * @throws Exception
+	 */
 	public HabbleAPI() throws Exception {
 		this(false);
 	}
 	
+	/**
+	 * New instance of HabbleAPI client constructor. 
+	 * @param forAgent: if TRUE it doesn't load properties and doesn't initialize OAuth2 REST template
+	 * @throws Exception
+	 */
 	public HabbleAPI(Boolean forAgent) throws Exception {
 		if(!forAgent) {
 			loadProperties();
@@ -123,8 +133,8 @@ public class HabbleAPI  {
 		return sitesRequest;
 	}
 	
-	private HabbleAPI createRestTemplate() {
-		noAuthTemplate = new RestTemplate();
+	private HabbleAPI createRestTemplate() { 
+		noAuthTemplate = new RestTemplate(CommonUtils.createRestConfiguration());
 		noAuthTemplate.getMessageConverters()
 		        .add(0, new StringHttpMessageConverter(Charset.forName("UTF-8")));
 		return this;
@@ -136,8 +146,9 @@ public class HabbleAPI  {
         resource.setId("api");
         resource.setClientId(clientId);
         resource.setClientSecret(clientSecret);
-        resource.setAccessTokenUri(Endpoint.tokenUrl());
-        oauthTemplate = new OAuth2RestTemplate(resource);
+        resource.setAccessTokenUri(Endpoint.tokenUrl());       
+        oauthTemplate = new OAuth2RestTemplate(resource);        
+        oauthTemplate.setRequestFactory(CommonUtils.createRestConfiguration());
         
         this.clientId = clientId;
         this.clientSecret = clientSecret;

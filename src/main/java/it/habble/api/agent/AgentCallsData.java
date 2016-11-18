@@ -17,7 +17,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
     "callerNumber": " 390854151424",
     "grossDuration": 49,
     "mcc": "222",
-    "mnc": "01",
     "netDuration": 49,
     "answer": "2016-03-22 15:45:04",
     "end": "2016-03-22 15:45:53",
@@ -28,7 +27,7 @@ public class AgentCallsData {
 	public String direction, status, id;
 	public String calledNumber, callerNumber;
 	public Integer grossDuration, netDuration;
-	public String mcc, mnc;
+	public String mcc;
 	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm", timezone="CET")
 	public Date answer, end, start;
 	
@@ -69,11 +68,6 @@ public class AgentCallsData {
 	
 	public AgentCallsData mcc(String mcc) {
 		this.mcc = mcc;
-		return this;
-	} 
-	
-	public AgentCallsData mnc(String mnc) {
-		this.mnc = mnc;
 		return this;
 	} 
 	

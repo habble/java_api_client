@@ -25,7 +25,7 @@ public enum Endpoint {
 	}
 
 	public static String baseHost() { // "https://cdn.habble.it"
-		return "https://rest.habble.it:8443"; 
+		return "https://dev.habble.it:8443"; 
 	}
 	
 	public static String apiBaseUrl() { return baseHost() + "/api";   }

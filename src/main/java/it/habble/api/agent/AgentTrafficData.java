@@ -14,7 +14,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
     "id_send": 832,
     "id_send_date": 1458650925697,
     "mcc": "222",
-    "mnc": "01",
     "sizeUnit": "2",
     "amount": 2833064        
   }
@@ -24,7 +23,7 @@ public class AgentTrafficData {
 	public Integer idSend;
 	public String idSendDate;
 	public Integer amount, sizeUnit;
-	public String mcc, mnc;
+	public String mcc;
 	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd", timezone="CET")
 	public Date date;
 	
@@ -50,11 +49,6 @@ public class AgentTrafficData {
 	
 	public AgentTrafficData mcc(String mcc) {
 		this.mcc = mcc;
-		return this;
-	} 
-	
-	public AgentTrafficData mnc(String mnc) {
-		this.mnc = mnc;
 		return this;
 	} 
 	

@@ -1,5 +1,7 @@
 package it.habble.api.agent.security;
 
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -24,7 +26,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  * @author ccastelli
  *
  */
-@JsonIgnoreProperties({"valid", "deviceOSName", "isAdmin"})
+@JsonIgnoreProperties({"valid", "deviceOSName"})
 public class Info {
 	public String serial;
 	public Integer protocol;
@@ -35,8 +37,29 @@ public class Info {
 	public String versionOS, localeOs;
 	public Integer versionSDK;
 	
+	// Samsung Knox
+	public Boolean mdmActive;
+	public Boolean isAdmin;
+	public List<String> restrictions;
+
+	//iOS info fields
+	public String statusBg;
+	public String statusLocalization;
+	public String statusNotification;
+	public String localizationEnabled;
+	
 	public Boolean isValid() {
 		return StringUtils.isNotBlank(this.serial); 
+	}
+	
+	public Info mdmActive(Boolean isActive) {
+		this.mdmActive = isActive;
+		return this;
+	}
+	
+	public Info isAdmin(Boolean isAdmin) {
+		this.isAdmin = isAdmin;
+		return this;
 	}
 	
 	public Info idPush(String idPush) {
@@ -51,6 +74,11 @@ public class Info {
 	
 	public Info versionSDK(Integer versionSDK) {
 		this.versionSDK = versionSDK;
+		return this;
+	}
+	
+	public Info restrictions(List<String> restrictions) {
+		this.restrictions = restrictions;
 		return this;
 	}
 	
