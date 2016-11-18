@@ -4,7 +4,7 @@
 	<groupId>it.habble.api</groupId>
 	<artifactId>client</artifactId>
 	<version>0.2</version>
-	<name>Habble API Java client</name>
+	<name>api_java_client</name>
 	<packaging>jar</packaging>
 	<properties>
 		<java.version>1.8</java.version>
@@ -73,6 +73,11 @@
 			<artifactId>guava</artifactId>
 			<version>19.0</version>
 		</dependency>
+		<dependency>
+			<groupId>it.habble</groupId>
+			<artifactId>common</artifactId>
+			<version>3.0.0</version>
+		</dependency>		
 
 		<!-- JACKSON -->
 		<dependency>
@@ -87,7 +92,52 @@
 
 	<!-- Package as an executable jar -->
 	<build>
-		<defaultGoal>clean install package</defaultGoal>
+		<finalName>${project.name}</finalName>
+		<defaultGoal>clean compile package</defaultGoal>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-eclipse-plugin</artifactId>
+					<version>2.10</version>
+					<configuration>
+						<downloadSources>true</downloadSources>
+						<downloadJavadocs>true</downloadJavadocs>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.3</version>
+					<configuration>
+						<source>1.8</source>
+						<target>1.8</target>
+						<encoding>UTF-8</encoding>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-dependency-plugin</artifactId>
+					<version>2.10</version>
+
+					<configuration>
+						<artifactItems>
+							<artifactItem>
+								<groupId>it.habble</groupId>
+								<artifactId>common</artifactId>
+								<version>3.0.0</version>
+								<overWrite>true</overWrite>
+								<outputDirectory>${project.build.directory}/classes/</outputDirectory>
+							</artifactItem>
+						</artifactItems>
+						<excludes>it/habble/common/testutils/**</excludes>
+						<overWriteReleases>true</overWriteReleases>
+						<overWriteSnapshots>true</overWriteSnapshots>
+					</configuration>
+
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 
 	<!-- Add Spring repositories -->
